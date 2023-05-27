@@ -9,6 +9,7 @@ public class UpdateCatalogueServiceClient {
     lk.iit.retail.grpc.generated.UpdateCatalogueServiceGrpc.UpdateCatalogueServiceBlockingStub clientStub = null;
     String host = null;
     int port = -1;
+    private boolean isUpdate = true;
 
     public UpdateCatalogueServiceClient(String host, int port) {
         this.host = host;
@@ -29,11 +30,11 @@ public class UpdateCatalogueServiceClient {
     }
 
     public void processUserRequests() throws InterruptedException {
-        while (true) {
+        while (isUpdate) {
             Scanner userInput = new Scanner(System.in);
-            System.out.println("\nEnter Catalogue ID to update the balance :");
+            System.out.println("\nEnter Catalogue ID to update the quantity :");
             String catalogueId = userInput.nextLine().trim();
-            System.out.println("\nEnter quantity to update the balance :");
+            System.out.println("\nEnter quantity to update the quantity :");
             String quantity = userInput.nextLine().trim();
             System.out.println("Requesting server to update the catalogue " + catalogueId);
             lk.iit.retail.grpc.generated.UpdateCatalogueRequest request = lk.iit.retail.grpc.generated.UpdateCatalogueRequest
@@ -42,8 +43,13 @@ public class UpdateCatalogueServiceClient {
                     .setUpdateQuantity(Integer.parseInt(quantity))
                     .build();
             lk.iit.retail.grpc.generated.UpdateCatalogueResponse response = clientStub.updateCatalogue(request);
-            System.out.printf("account update status " + response.getIsUpdate());
+            System.out.println("Catalogue update status " + response.getIsUpdate());
             Thread.sleep(1000);
+            System.out.println("Do you want update another catalogue yes/no?");
+            String isUpdateResposnse = userInput.nextLine().trim();
+            if ("no".equals(isUpdateResposnse)) {
+                isUpdate = false;
+            }
         }
     }
 }
